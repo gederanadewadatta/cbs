@@ -63,7 +63,7 @@ public class AccountHandler {
     public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
         logger.debug("Endpoint called - getCurrentBalance");
         Account accountFilter =
-                new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
+                new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"),request.pathVariable("accountType"));
         return accountService.getCurrentBalance(accountFilter)
                 .flatMap(resp -> {
                     return HandlerResponseUtils.ok(resp, request);

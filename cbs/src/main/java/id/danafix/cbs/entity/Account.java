@@ -18,25 +18,37 @@ public class Account {
 
     private String accountNumber;
 
+
+    private String accountType;
+
     @NumberFormat(pattern = "#,###,###,###.##")
     private BigDecimal balance;
 
     public Account(){
     }
 
-    public Account(  String branchNumber,   String accountNumber) {
+    public Account(  String branchNumber,   String accountNumber, String accountType) {
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
+        this.accountType = accountType;
     }
 
     public Account(  String branchNumber,
                    String accountNumber,
-                   BigDecimal balance) {
+                   BigDecimal balance, String accountType) {
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
         this.balance = balance;
+        this.accountType = accountType;
     }
 
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
     public String getId() {
         return id;
     }
@@ -77,12 +89,12 @@ public class Account {
         return id.equals(account.id) &&
                 branchNumber.equals(account.branchNumber) &&
                 accountNumber.equals(account.accountNumber) &&
-                Objects.equals(balance, account.balance);
+                Objects.equals(balance, account.balance) && accountType.equals(account.accountType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, branchNumber, accountNumber, balance);
+        return Objects.hash(id, branchNumber, accountNumber, balance,accountType);
     }
 
     @Override
@@ -91,6 +103,7 @@ public class Account {
                 "id='" + id + '\'' +
                 ", branchNumber='" + branchNumber + '\'' +
                 ", accountNumber='" + accountNumber + '\'' +
+                ", accountType='" + accountType + '\'' +
                 ", balance=" + balance +
                 '}';
     }

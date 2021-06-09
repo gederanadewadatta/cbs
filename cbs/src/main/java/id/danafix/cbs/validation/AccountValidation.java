@@ -34,7 +34,7 @@ public class AccountValidation  {
     }
 
     private boolean validateAccount(Account account) {
-        return !(account.getBranchNumber().isEmpty() || account.getAccountNumber().isEmpty());
+        return !(account.getBranchNumber().isEmpty() || account.getAccountNumber().isEmpty() || account.getAccountType().isEmpty());
     }
 
     private boolean validateId(Account account){
