@@ -24,16 +24,16 @@ public enum EValidationResponse {
     TRANSACTION_NOT_EFETIVATED_INSUFFICIENT_FUNDS("ERR-4001", "WS-CORE-BANKING-SYSTEM", "TEC", "TRANSACTION", "Transaction not effetivated - Insufficient funds"),
     TRANSACTION_TYPE_INVALID("ERR-4002", "WS-CORE-BANKING-SYSTEM", "TEC", "TRANSACTION", "Transaction type invalid");
 
-    @JsonProperty("codigo")
+    @JsonProperty("code")
     private String code;
 
-    @JsonProperty("origem")
+    @JsonProperty("origin")
     private String origin;
 
-    @JsonProperty("tipo")
+    @JsonProperty("type")
     private String type;
 
-    @JsonProperty("subtipo")
+    @JsonProperty("subtype")
     private String subType;
 
     private String msg;

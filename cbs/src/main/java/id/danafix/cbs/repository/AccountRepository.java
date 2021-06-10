@@ -50,17 +50,17 @@ public class AccountRepository {
                         .compareToIgnoreCase(accountFilter.getBranchNumber()) == 0);
     }
 
-    public Flux<Account> findByAccountNumber(Account accountFilter) {
+    public Flux<Account> findByCustomerName(Account accountFilter) {
         return reactiveMongoTemplate.findAll(Account.class)
-                .filter(account -> account.getAccountNumber()
-                        .compareToIgnoreCase(accountFilter.getAccountNumber()) == 0);
+                .filter(account -> account.getCustomerName()
+                        .compareToIgnoreCase(accountFilter.getCustomerName()) == 0);
     }
 
-    public Mono<Account> findByBranchAndAccountNumber(Account accountFilter) {
+    public Mono<Account> findByBranchAndId(Account accountFilter) {
         Query queryBranchFilter = new Query(where("branchNumber").is(accountFilter.getBranchNumber()));
         return reactiveMongoTemplate.find(queryBranchFilter, Account.class)
-                .filter(account -> account.getAccountNumber()
-                        .compareToIgnoreCase(accountFilter.getAccountNumber()) == 0)
+                .filter(account -> account.getId()
+                        .compareToIgnoreCase(accountFilter.getId()) == 0)
                 .elementAt(0, new Account());
     }
 }

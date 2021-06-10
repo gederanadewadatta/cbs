@@ -1,0 +1,36 @@
+#spring
+spring:
+  application:
+    name: cbs
+  data:
+    mongodb:
+      host: localhost
+      database: cbs
+      port: 27017
+  profiles:
+    active: dev
+
+
+#logging
+logging:
+  level:
+    id:
+      danafix:
+        cbs: DEBUG
+
+#server
+server:
+  port: 10087
+  servlet:
+    context-path: /
+
+#api.url
+api:
+  url:
+    account: http://localhost:10087
+    deposito: http://localhost:10088
+    saving: http://localhost:10089
+    current: http://localhost:10090
+    loan: http://localhost:10091
+    back-office: http://localhost:10092
+    setting: http://localhost:10093

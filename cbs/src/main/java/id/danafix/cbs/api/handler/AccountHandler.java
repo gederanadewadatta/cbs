@@ -1,5 +1,6 @@
 package id.danafix.cbs.api.handler;
 
+import com.sun.mail.imap.protocol.IMAPProtocol;
 import id.danafix.cbs.entity.Account;
 import id.danafix.cbs.exceptions.CoreException;
 import id.danafix.cbs.service.impl.AccountService;
@@ -14,15 +15,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 @Component
 public class AccountHandler {
     private static final Logger logger = LoggerFactory.getLogger(AccountHandler.class);
 
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @Autowired
     public AccountHandler(AccountService accountService) {
@@ -35,41 +33,46 @@ public class AccountHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(accountService.findAll(), Account.class);
     }
-
-    public Mono<ServerResponse> findById(ServerRequest request){
+    public Mono<ServerResponse> findByOpeningDate(ServerRequest request){
         logger.debug("Endpoint called - findById");
-        String id = request.pathVariable("id");
-        return accountService.findById(id)
-                .flatMap(resp -> {
-                    return HandlerResponseUtils.ok(resp, request);
-                })
-                .switchIfEmpty(ServerResponse.notFound().build())
-                .onErrorResume(CoreException.class,
-                        error -> HandlerResponseUtils.badRequest(error.getErrorResponse(), request));
+        String openingDate = request.pathVariable("openingDate");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(accountService.findByOpeningDate(openingDate), Account.class);
     }
+    public Mono<ServerResponse> findByStatus(ServerRequest request){
+        logger.debug("Endpoint called - findById");
+        String accountStatus = request.pathVariable("accountStatus");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(accountService.findByStatus(accountStatus), Account.class);
+    }
+//    public Mono<ServerResponse> findById(ServerRequest request){
+//        logger.debug("Endpoint called - findById");
+//        String id = request.pathVariable("id");
+//        return accountService.findById(id)
+//                .flatMap(resp -> HandlerResponseUtils.ok(resp, request))
+//                .switchIfEmpty(ServerResponse.notFound().build())
+//                .onErrorResume(CoreException.class,
+//                        error -> HandlerResponseUtils.badRequest(error.getErrorResponse(), request));
+//    }
 
     public Mono<ServerResponse> save(ServerRequest request){
         logger.debug("Endpoint called - save");
         return request.bodyToMono(Account.class)
-                .flatMap(ac -> {
-                    return accountService
-                            .save(ac)
-                            .flatMap(obj -> {
-                                return HandlerResponseUtils.ok(obj, request);
-                            });
-                });
+                .flatMap(ac -> accountService
+                        .save(ac)
+                        .flatMap(obj -> HandlerResponseUtils.ok(obj, request)));
     }
 
-    public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
-        logger.debug("Endpoint called - getCurrentBalance");
-        Account accountFilter =
-                new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"),request.pathVariable("accountType"));
-        return accountService.getCurrentBalance(accountFilter)
-                .flatMap(resp -> {
-                    return HandlerResponseUtils.ok(resp, request);
-                })
-                .switchIfEmpty(ServerResponse.notFound().build())
-                .onErrorResume(CoreException.class,
-                        error -> HandlerResponseUtils.badRequest(error.getErrorResponse(), request));
+    public Mono<Account> findById(String id){
+        logger.debug("Endpoint called - findById");
+        return accountService.findById(id);
+    }
+
+    public Flux<Account> insert(Mono<Account> bodyToMono) {
+
+        logger.debug("Endpoint called - insertCustomer");
+        return accountService.insert(bodyToMono);
     }
 }

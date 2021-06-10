@@ -4,6 +4,7 @@ import id.danafix.cbs.api.ApiErrorResponse;
 import id.danafix.cbs.entity.Account;
 import id.danafix.cbs.enumeration.EValidationResponse;
 import id.danafix.cbs.exceptions.CoreException;
+import id.danafix.cbs.repository.AccountRepo;
 import id.danafix.cbs.repository.AccountRepository;
 import id.danafix.cbs.service.IAccountService;
 import id.danafix.cbs.validation.AccountValidation;
@@ -24,12 +25,15 @@ public class AccountService implements IAccountService {
 
     private AccountValidation accountValidation;
 
+    private AccountRepo repo;
+
     @Autowired
-    public AccountService( AccountRepository accountRepository,
-                           AccountValidation accountValidation ) {
+    public AccountService(AccountRepository accountRepository, AccountValidation accountValidation, AccountRepo repo) {
         this.accountRepository = accountRepository;
         this.accountValidation = accountValidation;
+        this.repo = repo;
     }
+
 
     @Override
     public Flux<Account> findAll() {
@@ -58,9 +62,24 @@ public class AccountService implements IAccountService {
         return accountRepository.delete(account);
     }
 
+    @Override
+    public Mono<Account> findByOpeningDate(String openingDate) {
+        return null;
+    }
+
+    @Override
+    public Mono<Account> findByStatus(String accountStatus) {
+        return null;
+    }
+
+    @Override
+    public Flux<Account> insert(Mono<Account> bodyToMono) {
+        return repo.insert(bodyToMono);
+    }
+
     public Mono<Account> getCurrentBalance(Account accountFilter){
         logger.debug("Current balance executing : " + accountFilter.toString());
-        return accountRepository.findByBranchAndAccountNumber(accountFilter)
+        return accountRepository.findByBranchAndId(accountFilter)
                 .switchIfEmpty(Mono.error(
                         new CoreException(
                                 new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_BALANCE_ACCOUNT))))
@@ -74,9 +93,9 @@ public class AccountService implements IAccountService {
 
     public Mono<Account> verifyAccountExistence(Account account){
         logger.debug("Verifing account existence. Branch : {} - Account number : {}",
-                account.getBranchNumber(), account.getAccountNumber());
+                account.getBranchNumber(), account.getId());
         return accountValidation.validate(account)
-                .flatMap(accountRepository::findByBranchAndAccountNumber)
+                .flatMap(accountRepository::findByBranchAndId)
                 .flatMap(accountValidation::validateAll)
                 .onErrorResume(error -> {
                     logger.error("[ERROR] Verifing account existence : {}", error.getMessage());

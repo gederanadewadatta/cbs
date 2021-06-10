@@ -10,4 +10,9 @@ public interface IAccountService {
     Mono<Account> save(Account account);
     Mono<Account> delete(Account account);
 
+    Mono<Account> findByOpeningDate(String openingDate);
+
+    Mono<Account> findByStatus(String accountStatus);
+
+    Flux<Account> insert(Mono<Account> bodyToMono);
 }

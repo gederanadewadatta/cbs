@@ -6,9 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
-@Document
+@Document(collection = "account")
 @Data
 public class Account {
     @Id
@@ -16,85 +17,13 @@ public class Account {
 
     private String branchNumber;
 
-    private String accountNumber;
+    private String customerName;
+
+    private List<AccountDetail> accountDetail;
 
 
-    private String accountType;
-
-    @NumberFormat(pattern = "#,###,###,###.##")
-    private BigDecimal balance;
 
     public Account(){
-    }
-
-    public Account(  String branchNumber,   String accountNumber, String accountType) {
-        this.branchNumber = branchNumber;
-        this.accountNumber = accountNumber;
-        this.accountType = accountType;
-    }
-
-    public Account(  String branchNumber,
-                   String accountNumber,
-                   BigDecimal balance, String accountType) {
-        this.branchNumber = branchNumber;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.accountType = accountType;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
-    }
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getBranchNumber() {
-        return branchNumber;
-    }
-
-    public void setBranchNumber(String branchNumber) {
-        this.branchNumber = branchNumber;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return id.equals(account.id) &&
-                branchNumber.equals(account.branchNumber) &&
-                accountNumber.equals(account.accountNumber) &&
-                Objects.equals(balance, account.balance) && accountType.equals(account.accountType);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, branchNumber, accountNumber, balance,accountType);
     }
 
     @Override
@@ -102,9 +31,21 @@ public class Account {
         return "Account{" +
                 "id='" + id + '\'' +
                 ", branchNumber='" + branchNumber + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", accountType='" + accountType + '\'' +
-                ", balance=" + balance +
+                ", customerName='" + customerName + '\'' +
+                ", accountDetail=" + accountDetail +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        Account account = (Account) o;
+        return getId().equals(account.getId()) && getBranchNumber().equals(account.getBranchNumber()) && getCustomerName().equals(account.getCustomerName()) && getAccountDetail().equals(account.getAccountDetail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getBranchNumber(), getCustomerName(), getAccountDetail());
     }
 }
